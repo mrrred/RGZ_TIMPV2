@@ -322,7 +322,6 @@ public sealed class MainViewModel : BaseViewModel
         SaveProject();
     }
 
-    // Connection (edge creation) methods
     public void StartConnection(GraphNodeViewModel source, Point startPoint)
     {
         _connectionSource = source;
