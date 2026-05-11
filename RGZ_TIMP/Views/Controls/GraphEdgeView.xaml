@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="RGZ_TIMP.Views.Controls.GraphEdgeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             MouseLeftButtonDown="OnMouseLeftButtonDown">
+    <UserControl.ToolTip>
+        <StackPanel>
+            <TextBlock Text="{Binding EdgeId, StringFormat='Дуга #{0}'}"/>
+            <TextBlock Text="{Binding Predicate, StringFormat='Предикат: {0}'}"/>
+            <TextBlock Text="{Binding DelaySeconds, StringFormat='Задержка: {0} сек'}"/>
+        </StackPanel>
+    </UserControl.ToolTip>
+    <Canvas>
+        <Path Data="{Binding Geometry}" Stroke="Black" StrokeThickness="2"/>
+        <Polygon Points="{Binding ArrowPoints}" Fill="Black"/>
+    </Canvas>
+</UserControl>
