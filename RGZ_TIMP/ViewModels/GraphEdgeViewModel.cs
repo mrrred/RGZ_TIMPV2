@@ -32,6 +32,12 @@ public sealed class GraphEdgeViewModel : BaseViewModel
     public int SourceNodeNumber => Model.SourceNodeNumber;
     public int TargetNodeNumber => Model.TargetNodeNumber;
 
+    public int LocalOrder
+    {
+        get => Model.LocalOrder;
+        set { if (Model.LocalOrder != value) { Model.LocalOrder = value; OnPropertyChanged(); } }
+    }
+
     public int Predicate
     {
         get => Model.Predicate;
@@ -50,6 +56,7 @@ public sealed class GraphEdgeViewModel : BaseViewModel
         set { if (Model.ParallelOffset != value) { Model.ParallelOffset = value; OnPropertyChanged(); UpdateGeometry(); } }
     }
 
+    public ICommand DeleteCommand { get; }
     public ICommand EditCommand { get; }
 
     public GraphEdgeViewModel(GraphEdgeModel model,
@@ -57,6 +64,7 @@ public sealed class GraphEdgeViewModel : BaseViewModel
         GraphNodeViewModel to,
         IGraphGeometryService geometryService,
         Action<GraphEdgeViewModel>? onEdit = null,
+        Action<GraphEdgeViewModel>? onDelete = null,
         Func<bool>? canEdit = null)
     {
         Model = model;
@@ -69,6 +77,7 @@ public sealed class GraphEdgeViewModel : BaseViewModel
 
         UpdateGeometry();
 
+        DeleteCommand = new RelayCommand(_ => onDelete?.Invoke(this), _ => canEdit?.Invoke() ?? true);
         EditCommand = new RelayCommand(_ => onEdit?.Invoke(this), _ => canEdit?.Invoke() ?? true);
     }
 

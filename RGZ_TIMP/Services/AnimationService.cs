@@ -46,13 +46,13 @@ public sealed class AnimationService : IAnimationService
 
                 var outgoing = edges
                     .Where(e => e.SourceNodeNumber == current.Number)
-                    .OrderBy(e => e.Predicate)
+                    .OrderBy(e => e.LocalOrder)
                     .ToList();
 
                 if (outgoing.Count == 0) break;
 
-                var predicate = _interpreter.Evaluate(current.NodeCode, outgoing.Count);
-                var selected = outgoing.FirstOrDefault(e => e.Predicate == predicate) ?? outgoing[0];
+                var resultIndex = _interpreter.Evaluate(current.NodeCode, outgoing.Count);
+                var selected = outgoing.ElementAtOrDefault(resultIndex - 1) ?? outgoing[0];
 
                 await Task.Delay(TimeSpan.FromSeconds(selected.DelaySeconds), token);
 

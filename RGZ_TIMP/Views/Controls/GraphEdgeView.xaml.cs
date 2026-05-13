@@ -15,7 +15,10 @@ public partial class GraphEdgeView : UserControl
     {
         if (e.ClickCount == 2 && DataContext is GraphEdgeViewModel vm)
         {
-            vm.EditCommand.Execute(null);
+            if (vm.EditCommand.CanExecute(null))
+            {
+                vm.EditCommand.Execute(null);
+            }
             e.Handled = true;
         }
     }

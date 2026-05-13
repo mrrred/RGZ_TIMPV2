@@ -114,9 +114,17 @@ public sealed class MainViewModel : BaseViewModel
 
     public void AddNode(double x, double y)
     {
+        int newId = 1;
+        var existingIds = Nodes.Select(n => n.Number).OrderBy(id => id).ToList();
+        foreach (var id in existingIds)
+        {
+            if (id == newId) newId++;
+            else break;
+        }
+
         var model = new GraphNodeModel
         {
-            Number = _nextNodeId++,
+            Number = newId,
             CenterX = x - 40, // compensate for offset in canvas (size 80x80)
             CenterY = y - 40
         };
@@ -138,7 +146,7 @@ public sealed class MainViewModel : BaseViewModel
                 Predicate = localOrder,
                 DelaySeconds = _defaultEdgeDelayMs / 1000
             };
-            var edgeVm = new GraphEdgeViewModel(model, from, to, _geometryService, onEdit: EditEdge, canEdit: () => !IsAnimating);
+            var edgeVm = new GraphEdgeViewModel(model, from, to, _geometryService, onEdit: EditEdge, onDelete: RemoveEdge, canEdit: () => !IsAnimating);
             Edges.Add(edgeVm);
         }
         else
@@ -156,7 +164,7 @@ public sealed class MainViewModel : BaseViewModel
                 Predicate = localOrder,
                 DelaySeconds = _defaultEdgeDelayMs / 1000
             };
-            var edgeVm = new GraphEdgeViewModel(model, from, to, _geometryService, onEdit: EditEdge, canEdit: () => !IsAnimating);
+            var edgeVm = new GraphEdgeViewModel(model, from, to, _geometryService, onEdit: EditEdge, onDelete: RemoveEdge, canEdit: () => !IsAnimating);
             Edges.Add(edgeVm);
         }
         UpdateParallelOffsets(from, to);
@@ -188,9 +196,35 @@ public sealed class MainViewModel : BaseViewModel
     public void RemoveNode(GraphNodeViewModel node)
     {
         var edgesToRemove = Edges.Where(e => e.SourceNodeNumber == node.Number || e.TargetNodeNumber == node.Number).ToList();
+        var sourcesToUpdate = edgesToRemove.Select(e => e.SourceNodeNumber).Distinct().Where(id => id != node.Number).ToList();
+
         foreach (var edge in edgesToRemove)
             Edges.Remove(edge);
+
+        foreach (var src in sourcesToUpdate)
+        {
+            var remaining = Edges.Where(e => e.SourceNodeNumber == src).OrderBy(e => e.LocalOrder).ToList();
+            for (int i = 0; i < remaining.Count; i++)
+                remaining[i].LocalOrder = i + 1;
+        }
+
         Nodes.Remove(node);
+    }
+
+    private void RemoveEdge(GraphEdgeViewModel edge)
+    {
+        int src = edge.SourceNodeNumber;
+        var from = Nodes.FirstOrDefault(n => n.Number == edge.SourceNodeNumber);
+        var to = Nodes.FirstOrDefault(n => n.Number == edge.TargetNodeNumber);
+
+        Edges.Remove(edge);
+
+        var remaining = Edges.Where(e => e.SourceNodeNumber == src).OrderBy(e => e.LocalOrder).ToList();
+        for (int i = 0; i < remaining.Count; i++)
+            remaining[i].LocalOrder = i + 1;
+
+        if (from != null && to != null)
+            UpdateParallelOffsets(from, to);
     }
 
     private void EditNodeCode(GraphNodeViewModel node)
@@ -294,7 +328,7 @@ public sealed class MainViewModel : BaseViewModel
         {
             var from = nodeMap[edgeModel.SourceNodeNumber];
             var to = nodeMap[edgeModel.TargetNodeNumber];
-            var edgeVm = new GraphEdgeViewModel(edgeModel, from, to, _geometryService, onEdit: EditEdge, canEdit: () => !IsAnimating);
+            var edgeVm = new GraphEdgeViewModel(edgeModel, from, to, _geometryService, onEdit: EditEdge, onDelete: RemoveEdge, canEdit: () => !IsAnimating);
             Edges.Add(edgeVm);
         }
         // Recalculate all parallel offsets
