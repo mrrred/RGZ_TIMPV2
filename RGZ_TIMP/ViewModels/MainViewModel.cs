@@ -19,7 +19,7 @@ public sealed class MainViewModel : BaseViewModel
     private readonly Stack<GraphProjectModel> _redoStack = new();
     private bool _isRestoringSnapshot = false;
 
-    private string _modeText = "Редактирование";
+    private string _modeText = "Проект не создан или не открыт";
     public string ModeText
     {
         get => _modeText;
