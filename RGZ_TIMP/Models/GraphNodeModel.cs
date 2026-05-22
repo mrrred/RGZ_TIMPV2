@@ -6,5 +6,5 @@ public sealed class GraphNodeModel
     public double CenterX { get; set; }
     public double CenterY { get; set; }
     public double Radius { get; set; } = 30;
-    public string NodeCode { get; set; } = "rnd(1..n)";
+    public string NodeCode { get; set; } = "return Random.Next(1, n + 1);";
 }

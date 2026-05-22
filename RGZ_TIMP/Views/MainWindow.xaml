@@ -3,7 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:RGZ_TIMP.ViewModels"
         xmlns:controls="clr-namespace:RGZ_TIMP.Views.Controls"
-        Title="Графопостроитель" Height="700" Width="1100">
+        xmlns:srv="clr-namespace:RGZ_TIMP.Services"
+        Title="Графопостроитель" Height="700" Width="1100"
+        srv:HelpProvider.HelpKeyword="concept.html"
+        PreviewKeyDown="Window_PreviewKeyDown">
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding UndoCommand}" Key="Z" Modifiers="Ctrl" />
+        <KeyBinding Command="{Binding RedoCommand}" Key="Z" Modifiers="Ctrl+Shift" />
+    </Window.InputBindings>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -15,14 +22,14 @@
         <!-- Меню -->
         <Menu Grid.Row="0">
             <MenuItem Header="Команды">
-                <MenuItem Header="Создать" Command="{Binding NewProjectCommand}"/>
-                <MenuItem Header="Открыть" Command="{Binding LoadCommand}"/>
-                <MenuItem Header="Сохранить" Command="{Binding SaveCommand}"/>
+                <MenuItem Header="Создать" Command="{Binding NewProjectCommand}" srv:HelpProvider.HelpKeyword="cmd_new.html" ToolTip="Создать новый проект"/>
+                <MenuItem Header="Открыть" Command="{Binding LoadCommand}" srv:HelpProvider.HelpKeyword="cmd_open.html" ToolTip="Открыть проект из файла"/>
+                <MenuItem Header="Сохранить" Command="{Binding SaveCommand}" srv:HelpProvider.HelpKeyword="cmd_save.html" ToolTip="Сохранить текущий проект"/>
             </MenuItem>
-            <MenuItem Header="Анимация" Command="{Binding AnimationSettingsCommand}" IsEnabled="{Binding HasProject}"/>
-            <MenuItem Header="Выполнить" Command="{Binding RunAnimationCommand}" IsEnabled="{Binding HasProject}"/>
-            <MenuItem Header="Остановить" Command="{Binding StopAnimationCommand}" IsEnabled="{Binding HasProject}"/>
-            <MenuItem Header="?" Command="{Binding ShowHelpCommand}"/>
+            <MenuItem Header="Анимация" Command="{Binding AnimationSettingsCommand}" IsEnabled="{Binding HasProject}" srv:HelpProvider.HelpKeyword="cmd_anim_settings.html" ToolTip="Изменить параметры анимации"/>
+            <MenuItem Header="Выполнить" Command="{Binding RunAnimationCommand}" IsEnabled="{Binding HasProject}" srv:HelpProvider.HelpKeyword="cmd_anim_run.html" ToolTip="Запустить выполнение модели"/>
+            <MenuItem Header="Остановить" Command="{Binding StopAnimationCommand}" IsEnabled="{Binding HasProject}" srv:HelpProvider.HelpKeyword="cmd_anim_stop.html" ToolTip="Прервать выполнение модели"/>
+            <MenuItem Header="?" Command="{Binding ShowHelpCommand}" srv:HelpProvider.HelpKeyword="concept.html" ToolTip="Показать справку по программе"/>
         </Menu>
 
         <!-- Canvas с узлами и рёбрами -->
@@ -33,7 +40,7 @@
                 MouseLeftButtonUp="Canvas_MouseLeftButtonUp">
             <Canvas.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Добавить" Command="{Binding AddNodeCommand}"/>
+                    <MenuItem Header="Добавить" Command="{Binding AddNodeCommand}" srv:HelpProvider.HelpKeyword="cmd_add_node.html" ToolTip="Добавить новый узел"/>
                 </ContextMenu>
             </Canvas.ContextMenu>
 

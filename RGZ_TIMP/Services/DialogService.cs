@@ -27,7 +27,15 @@ public sealed class DialogService : IDialogService
             MinLines = 12
         };
         var okButton = new Button { Content = "OK", Width = 90, IsDefault = true, HorizontalAlignment = HorizontalAlignment.Right };
-        okButton.Click += (_, _) => dialog.DialogResult = true;
+        okButton.Click += (_, _) => 
+        {
+            if (string.IsNullOrWhiteSpace(textBox.Text) || textBox.Text.Trim() != "return Random.Next(1, n + 1);")
+            {
+                MessageBox.Show("Некорректный код узла.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            dialog.DialogResult = true;
+        };
         var panel = new StackPanel { Margin = new Thickness(12) };
         panel.Children.Add(new TextBlock { Text = "Введите код узла:", Margin = new Thickness(0, 0, 0, 6) });
         panel.Children.Add(textBox);
@@ -50,7 +58,20 @@ public sealed class DialogService : IDialogService
         var predicateBox = new TextBox { Text = predicate.ToString(), Margin = new Thickness(0, 0, 0, 10) };
         var delayBox = new TextBox { Text = delay.ToString(), Margin = new Thickness(0, 0, 0, 12) };
         var okButton = new Button { Content = "OK", Width = 90, IsDefault = true, HorizontalAlignment = HorizontalAlignment.Right };
-        okButton.Click += (_, _) => dialog.DialogResult = true;
+        okButton.Click += (_, _) => 
+        {
+            if (!int.TryParse(predicateBox.Text, out _))
+            {
+                MessageBox.Show("Некорректный предикат. Ожидается целое число.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (!int.TryParse(delayBox.Text, out _) || int.Parse(delayBox.Text) < 0)
+            {
+                MessageBox.Show("Некорректная задержка. Ожидается неотрицательное целое число.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            dialog.DialogResult = true;
+        };
         var panel = new StackPanel { Margin = new Thickness(12) };
         panel.Children.Add(new TextBlock { Text = "Предикат:", Margin = new Thickness(0, 0, 0, 4) });
         panel.Children.Add(predicateBox);
@@ -58,10 +79,8 @@ public sealed class DialogService : IDialogService
         panel.Children.Add(delayBox);
         panel.Children.Add(okButton);
         dialog.Content = panel;
-        if (dialog.ShowDialog() == true &&
-            int.TryParse(predicateBox.Text, out var newPred) &&
-            int.TryParse(delayBox.Text, out var newDelay))
-            return (newPred, newDelay);
+        if (dialog.ShowDialog() == true)
+            return (int.Parse(predicateBox.Text), int.Parse(delayBox.Text));
         return null;
     }
 
@@ -78,14 +97,22 @@ public sealed class DialogService : IDialogService
         };
         var durationBox = new TextBox { Text = currentDurationSec.ToString(), Margin = new Thickness(0, 0, 0, 10) };
         var okButton = new Button { Content = "OK", Width = 90, IsDefault = true, HorizontalAlignment = HorizontalAlignment.Right };
-        okButton.Click += (_, _) => dialog.DialogResult = true;
+        okButton.Click += (_, _) => 
+        {
+            if (!int.TryParse(durationBox.Text, out int dur) || dur <= 0)
+            {
+                MessageBox.Show("Некорректная длительность. Ожидается положительное целое число.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            dialog.DialogResult = true;
+        };
         var panel = new StackPanel { Margin = new Thickness(12) };
         panel.Children.Add(new TextBlock { Text = "Длительность (сек):", Margin = new Thickness(0, 0, 0, 4) });
         panel.Children.Add(durationBox);
         panel.Children.Add(okButton);
         dialog.Content = panel;
-        if (dialog.ShowDialog() == true && int.TryParse(durationBox.Text, out var dur))
-            return dur;
+        if (dialog.ShowDialog() == true)
+            return int.Parse(durationBox.Text);
         return null;
     }
 
@@ -110,7 +137,6 @@ public sealed class DialogService : IDialogService
 
     public void ShowHelpDialog()
     {
-        MessageBox.Show("Справка по приложению:\n- Создайте или откройте проект.\n- Используйте правую кнопку мыши, чтобы добавить узлы.\n- Для соединения узлов зажмите Ctrl и потяните мышь от черного кружка от узла к другому узлу.\n- Задайте настройки и запустите анимацию.", 
-            "Справка", MessageBoxButton.OK, MessageBoxImage.Information);
+        HelpProvider.ShowHelp();
     }
 }

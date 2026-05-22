@@ -62,4 +62,37 @@ public partial class MainWindow : Window
         }
         return null;
     }
+
+    private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.F1)
+        {
+            // Пытаемся найти элемент, над которым мышь, или сфокусированный элемент
+            DependencyObject? target = Mouse.DirectlyOver as DependencyObject ?? Keyboard.FocusedElement as DependencyObject;
+
+            string? kw = null;
+            while (target != null)
+            {
+                kw = RGZ_TIMP.Services.HelpProvider.GetHelpKeyword(target);
+                if (!string.IsNullOrEmpty(kw))
+                    break;
+
+                // Перемещаемся вверх по дереву
+                if (target is FrameworkElement fe && fe.Parent != null)
+                    target = fe.Parent;
+                else
+                    target = System.Windows.Media.VisualTreeHelper.GetParent(target);
+            }
+
+            if (!string.IsNullOrEmpty(kw))
+            {
+                RGZ_TIMP.Services.HelpProvider.ShowHelp(kw);
+            }
+            else
+            {
+                RGZ_TIMP.Services.HelpProvider.ShowHelp();
+            }
+            e.Handled = true;
+        }
+    }
 }

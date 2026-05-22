@@ -1,0 +1,21 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=Help.chm
+Contents file=toc.hhc
+Default topic=concept.html
+Display compile progress=No
+Index file=index.hhk
+Language=0x419 Русский (Россия)
+
+[FILES]
+concept.html
+functions.html
+procedures.html
+glossary.html
+cmd_new.html
+cmd_open.html
+cmd_save.html
+cmd_anim_settings.html
+cmd_anim_run.html
+cmd_anim_stop.html
+cmd_add_node.html

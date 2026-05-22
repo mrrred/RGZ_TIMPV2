@@ -15,6 +15,12 @@ namespace RGZ_TIMP
         {
             base.OnStartup(e);
 
+            DispatcherUnhandledException += (s, args) =>
+            {
+                MessageBox.Show($"Произошла непредвиденная ошибка:\n{args.Exception.Message}", "Ошибка приложения", MessageBoxButton.OK, MessageBoxImage.Error);
+                args.Handled = true;
+            };
+
             var mainWindow = new MainWindow
             {
                 DataContext = new MainViewModel()
