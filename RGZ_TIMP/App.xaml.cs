@@ -7,10 +7,14 @@ using RGZ_TIMP.ViewModels;
 namespace RGZ_TIMP
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    /// Логика взаимодействия для App.xaml.
     /// </summary>
     public partial class App : Application
     {
+        /// <summary>
+        /// Вызывается при запуске приложения.
+        /// </summary>
+        /// <param name="e">Аргументы события запуска.</param>
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);

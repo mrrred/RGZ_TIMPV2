@@ -4,17 +4,32 @@ using RGZ_TIMP.ViewModels;
 
 namespace RGZ_TIMP.Services;
 
+/// <summary>
+/// Сервис анимации обхода графа.
+/// </summary>
 public sealed class AnimationService : IAnimationService
 {
     private readonly INodeCodeInterpreterService _interpreter;
     private readonly Dispatcher _dispatcher;
 
+    /// <summary>
+    /// Инициализирует новый экземпляр класса AnimationService.
+    /// </summary>
+    /// <param name="interpreter">Интерпретатор для вычисления переходов в узлах.</param>
     public AnimationService(INodeCodeInterpreterService interpreter)
     {
         _interpreter = interpreter;
         _dispatcher = Application.Current.Dispatcher;
     }
 
+    /// <summary>
+    /// Запускает анимацию обхода графа.
+    /// </summary>
+    /// <param name="nodes">Список моделей узлов.</param>
+    /// <param name="edges">Список моделей ребер.</param>
+    /// <param name="duration">Длительность работы анимации.</param>
+    /// <param name="token">Токен отмены.</param>
+    /// <returns>Задача, представляющая выполнение анимации.</returns>
     public async Task RunAsync(
         IReadOnlyList<GraphNodeViewModel> nodes,
         IReadOnlyList<GraphEdgeViewModel> edges,
@@ -22,7 +37,10 @@ public sealed class AnimationService : IAnimationService
         CancellationToken token)
     {
         var startNode = nodes.FirstOrDefault(n => n.Number == 1);
-        if (startNode == null) return;
+        if (startNode == null)
+        {
+            return;
+        }
 
         var current = startNode;
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
@@ -49,7 +67,10 @@ public sealed class AnimationService : IAnimationService
                     .OrderBy(e => e.LocalOrder)
                     .ToList();
 
-                if (outgoing.Count == 0) break;
+                if (outgoing.Count == 0)
+                {
+                    break;
+                }
 
                 var resultIndex = _interpreter.Evaluate(current.NodeCode, outgoing.Count);
                 var selected = outgoing.ElementAtOrDefault(resultIndex - 1) ?? outgoing[0];
@@ -65,10 +86,10 @@ public sealed class AnimationService : IAnimationService
         }
         catch (OperationCanceledException)
         {
-            // Expected when the animation is stopped
+            // Ожидается при остановке анимации
         }
 
-        // cleanup
+        // Очистка выделения
         await _dispatcher.InvokeAsync(() =>
         {
             foreach (var n in nodes)

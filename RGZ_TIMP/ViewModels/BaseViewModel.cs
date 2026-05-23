@@ -2,4 +2,9 @@
 
 namespace RGZ_TIMP.ViewModels;
 
-public abstract class BaseViewModel : ObservableObject { }
+/// <summary>
+/// Базовый класс для ViewModel.
+/// </summary>
+public abstract class BaseViewModel : ObservableObject
+{
+}

@@ -4,8 +4,14 @@ using RGZ_TIMP.ViewModels;
 
 namespace RGZ_TIMP.Views.Controls;
 
+/// <summary>
+/// Представление для отображения ребра графа.
+/// </summary>
 public partial class GraphEdgeView : UserControl
 {
+    /// <summary>
+    /// Инициализирует новый экземпляр класса GraphEdgeView.
+    /// </summary>
     public GraphEdgeView()
     {
         InitializeComponent();
@@ -19,6 +25,7 @@ public partial class GraphEdgeView : UserControl
             {
                 vm.EditCommand.Execute(null);
             }
+
             e.Handled = true;
         }
     }

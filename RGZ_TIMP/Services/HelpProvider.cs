@@ -4,8 +4,14 @@ using System.Windows;
 
 namespace RGZ_TIMP.Services;
 
+/// <summary>
+/// Провайдер для отображения справочной информации.
+/// </summary>
 public static class HelpProvider
 {
+    /// <summary>
+    /// Свойство зависимости для ключевого слова справки.
+    /// </summary>
     public static readonly DependencyProperty HelpKeywordProperty =
         DependencyProperty.RegisterAttached(
             "HelpKeyword",
@@ -13,19 +19,34 @@ public static class HelpProvider
             typeof(HelpProvider),
             new PropertyMetadata(null));
 
+    /// <summary>
+    /// Получает ключевое слово справки для элемента.
+    /// </summary>
+    /// <param name="obj">Элемент зависимости.</param>
+    /// <returns>Ключевое слово.</returns>
     public static string GetHelpKeyword(DependencyObject obj)
     {
         return (string)obj.GetValue(HelpKeywordProperty);
     }
 
+    /// <summary>
+    /// Устанавливает ключевое слово справки для элемента.
+    /// </summary>
+    /// <param name="obj">Элемент зависимости.</param>
+    /// <param name="value">Значение ключевого слова.</param>
     public static void SetHelpKeyword(DependencyObject obj, string value)
     {
         obj.SetValue(HelpKeywordProperty, value);
     }
 
+    /// <summary>
+    /// Показывает окно справки.
+    /// </summary>
+    /// <param name="keyword">Ключевое слово для поиска нужного раздела (необязательно).</param>
     public static void ShowHelp(string? keyword = null)
     {
         string chmPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "help", "Help.chm");
+
         if (File.Exists(chmPath))
         {
             try
@@ -36,8 +57,6 @@ public static class HelpProvider
                     UseShellExecute = true
                 };
                 Process.Start(processInfo);
-                // System.Windows.Forms.Help.ShowHelp is better but requires WinForms reference.
-                // Doing basic CHM opening via Shell Execute natively opens the CHM viewer.
             }
             catch (Exception ex)
             {
@@ -46,9 +65,9 @@ public static class HelpProvider
         }
         else
         {
-            // Fallback to HTML files if CHM not compiled yet
             string htmlFile = string.IsNullOrEmpty(keyword) ? "concept.html" : keyword;
             string htmlPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "help", htmlFile);
+
             if (File.Exists(htmlPath))
             {
                 try
@@ -60,7 +79,10 @@ public static class HelpProvider
                     };
                     Process.Start(processInfo);
                 }
-                catch { }
+                catch
+                {
+                    // Игнорируем ошибку при открытии HTML
+                }
             }
             else
             {

@@ -5,8 +5,14 @@ using RGZ_TIMP.Views.Controls;
 
 namespace RGZ_TIMP.Views;
 
+/// <summary>
+/// Логика взаимодействия для MainWindow.xaml
+/// </summary>
 public partial class MainWindow : Window
 {
+    /// <summary>
+    /// Инициализирует новый экземпляр класса MainWindow.
+    /// </summary>
     public MainWindow()
     {
         InitializeComponent();
@@ -41,7 +47,6 @@ public partial class MainWindow : Window
     {
         if (DataContext is MainViewModel vm && vm.IsConnecting)
         {
-            // try to find a node under mouse to complete connection
             var pos = e.GetPosition((IInputElement)sender);
             var targetNode = FindNodeAt(pos);
             vm.CompleteConnection(targetNode);
@@ -50,16 +55,18 @@ public partial class MainWindow : Window
 
     private GraphNodeViewModel? FindNodeAt(Point position)
     {
-        // simple hit‑test: iterate through nodes and check bounding box
         if (DataContext is MainViewModel vm)
         {
             foreach (var node in vm.Nodes)
             {
-                var rect = new Rect(node.X, node.Y, 80, 80); // узлы теперь размером 80x80 (визуально круг 60)
+                var rect = new Rect(node.X, node.Y, 80, 80);
                 if (rect.Contains(position))
+                {
                     return node;
+                }
             }
         }
+
         return null;
     }
 
@@ -67,21 +74,25 @@ public partial class MainWindow : Window
     {
         if (e.Key == Key.F1)
         {
-            // Пытаемся найти элемент, над которым мышь, или сфокусированный элемент
             DependencyObject? target = Mouse.DirectlyOver as DependencyObject ?? Keyboard.FocusedElement as DependencyObject;
-
             string? kw = null;
+
             while (target != null)
             {
                 kw = RGZ_TIMP.Services.HelpProvider.GetHelpKeyword(target);
                 if (!string.IsNullOrEmpty(kw))
+                {
                     break;
+                }
 
-                // Перемещаемся вверх по дереву
                 if (target is FrameworkElement fe && fe.Parent != null)
+                {
                     target = fe.Parent;
+                }
                 else
+                {
                     target = System.Windows.Media.VisualTreeHelper.GetParent(target);
+                }
             }
 
             if (!string.IsNullOrEmpty(kw))
@@ -92,6 +103,7 @@ public partial class MainWindow : Window
             {
                 RGZ_TIMP.Services.HelpProvider.ShowHelp();
             }
+
             e.Handled = true;
         }
     }

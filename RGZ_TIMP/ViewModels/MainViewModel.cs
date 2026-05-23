@@ -7,6 +7,9 @@ using RGZ_TIMP.Services;
 
 namespace RGZ_TIMP.ViewModels;
 
+/// <summary>
+/// Главная модель представления для управления графом.
+/// </summary>
 public sealed class MainViewModel : BaseViewModel
 {
     private readonly IGraphSerializationService _serializer;
@@ -20,61 +23,247 @@ public sealed class MainViewModel : BaseViewModel
     private bool _isRestoringSnapshot = false;
 
     private string _modeText = "Проект не создан или не открыт";
+
+    /// <summary>
+    /// Текстовое описание текущего режима работы.
+    /// </summary>
     public string ModeText
     {
-        get => _modeText;
-        set => SetProperty(ref _modeText, value);
+        get
+        {
+            return _modeText;
+        }
+        set
+        {
+            SetProperty(ref _modeText, value);
+        }
     }
 
     private int _nextNodeId = 1;
     private int _nextEdgeId = 1;
 
     private int _animationDurationSeconds = 20;
+
+    /// <summary>
+    /// Длительность анимации в секундах.
+    /// </summary>
     public int AnimationDurationSeconds
     {
-        get => _animationDurationSeconds;
-        set => SetProperty(ref _animationDurationSeconds, value);
+        get
+        {
+            return _animationDurationSeconds;
+        }
+        set
+        {
+            SetProperty(ref _animationDurationSeconds, value);
+        }
     }
 
     private int _defaultEdgeDelayMs = 2000;
+
+    /// <summary>
+    /// Задержка анимации на ребре по умолчанию в миллисекундах.
+    /// </summary>
     public int DefaultEdgeDelayMs
     {
-        get => _defaultEdgeDelayMs;
-        set => SetProperty(ref _defaultEdgeDelayMs, value);
+        get
+        {
+            return _defaultEdgeDelayMs;
+        }
+        set
+        {
+            SetProperty(ref _defaultEdgeDelayMs, value);
+        }
     }
 
-    // preview line properties
     private bool _isConnecting;
-    public bool IsConnecting { get => _isConnecting; set => SetProperty(ref _isConnecting, value); }
+
+    /// <summary>
+    /// Флаг, указывающий на процесс соединения узлов.
+    /// </summary>
+    public bool IsConnecting
+    {
+        get
+        {
+            return _isConnecting;
+        }
+        set
+        {
+            SetProperty(ref _isConnecting, value);
+        }
+    }
 
     private bool _hasProject;
-    public bool HasProject { get => _hasProject; set => SetProperty(ref _hasProject, value); }
+
+    /// <summary>
+    /// Флаг, указывающий на наличие открытого проекта.
+    /// </summary>
+    public bool HasProject
+    {
+        get
+        {
+            return _hasProject;
+        }
+        set
+        {
+            SetProperty(ref _hasProject, value);
+        }
+    }
 
     private string? _currentProjectPath;
 
-    private double _previewX1, _previewY1, _previewX2, _previewY2;
-    public double PreviewX1 { get => _previewX1; set => SetProperty(ref _previewX1, value); }
-    public double PreviewY1 { get => _previewY1; set => SetProperty(ref _previewY1, value); }
-    public double PreviewX2 { get => _previewX2; set => SetProperty(ref _previewX2, value); }
-    public double PreviewY2 { get => _previewY2; set => SetProperty(ref _previewY2, value); }
+    private double _previewX1;
+    private double _previewY1;
+    private double _previewX2;
+    private double _previewY2;
+
+    /// <summary>
+    /// Координата X1 линии предпросмотра.
+    /// </summary>
+    public double PreviewX1
+    {
+        get
+        {
+            return _previewX1;
+        }
+        set
+        {
+            SetProperty(ref _previewX1, value);
+        }
+    }
+
+    /// <summary>
+    /// Координата Y1 линии предпросмотра.
+    /// </summary>
+    public double PreviewY1
+    {
+        get
+        {
+            return _previewY1;
+        }
+        set
+        {
+            SetProperty(ref _previewY1, value);
+        }
+    }
+
+    /// <summary>
+    /// Координата X2 линии предпросмотра.
+    /// </summary>
+    public double PreviewX2
+    {
+        get
+        {
+            return _previewX2;
+        }
+        set
+        {
+            SetProperty(ref _previewX2, value);
+        }
+    }
+
+    /// <summary>
+    /// Координата Y2 линии предпросмотра.
+    /// </summary>
+    public double PreviewY2
+    {
+        get
+        {
+            return _previewY2;
+        }
+        set
+        {
+            SetProperty(ref _previewY2, value);
+        }
+    }
 
     private GraphNodeViewModel? _connectionSource;
 
+    /// <summary>
+    /// Коллекция узлов графа.
+    /// </summary>
     public ObservableCollection<GraphNodeViewModel> Nodes { get; }
+
+    /// <summary>
+    /// Коллекция ребер графа.
+    /// </summary>
     public ObservableCollection<GraphEdgeViewModel> Edges { get; }
 
+    /// <summary>
+    /// Команда добавления узла.
+    /// </summary>
     public ICommand AddNodeCommand { get; }
+
+    /// <summary>
+    /// Команда сохранения проекта.
+    /// </summary>
     public ICommand SaveCommand { get; }
+
+    /// <summary>
+    /// Команда загрузки проекта.
+    /// </summary>
     public ICommand LoadCommand { get; }
+
+    /// <summary>
+    /// Команда создания нового проекта.
+    /// </summary>
     public ICommand NewProjectCommand { get; }
+
+    /// <summary>
+    /// Команда запуска анимации.
+    /// </summary>
     public ICommand RunAnimationCommand { get; }
+
+    /// <summary>
+    /// Команда остановки анимации.
+    /// </summary>
     public ICommand StopAnimationCommand { get; }
+
+    /// <summary>
+    /// Команда показа настроек анимации.
+    /// </summary>
     public ICommand AnimationSettingsCommand { get; }
+
+    /// <summary>
+    /// Команда отмены последнего действия.
+    /// </summary>
     public ICommand UndoCommand { get; }
+
+    /// <summary>
+    /// Команда повтора отмененного действия.
+    /// </summary>
     public ICommand RedoCommand { get; }
+
+    /// <summary>
+    /// Команда вызова справки.
+    /// </summary>
+    public ICommand ShowHelpCommand { get; }
 
     private Point _lastRightClickPosition;
 
+    private bool _isAnimating;
+
+    /// <summary>
+    /// Флаг, указывающий на процесс выполнения анимации.
+    /// </summary>
+    public bool IsAnimating
+    {
+        get
+        {
+            return _isAnimating;
+        }
+        set
+        {
+            if (SetProperty(ref _isAnimating, value))
+            {
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Инициализирует новый экземпляр класса MainViewModel.
+    /// </summary>
     public MainViewModel()
     {
         _serializer = new GraphSerializationService();
@@ -98,30 +287,22 @@ public sealed class MainViewModel : BaseViewModel
         RedoCommand = new RelayCommand(_ => Redo(), _ => !IsAnimating && _redoStack.Count > 0);
     }
 
-    public ICommand ShowHelpCommand { get; }
-
-    private bool _isAnimating;
-    public bool IsAnimating
-    {
-        get => _isAnimating;
-        set
-        {
-            if (SetProperty(ref _isAnimating, value))
-            {
-                CommandManager.InvalidateRequerySuggested();
-            }
-        }
-    }
-
     public void SetLastRightClickPosition(Point pos) => _lastRightClickPosition = pos;
 
+    /// <summary>
+    /// Сохраняет текущее состояние проекта в историю отмен.
+    /// </summary>
     public void SaveSnapshot()
     {
-        if (_isRestoringSnapshot || !HasProject) return;
+        if (_isRestoringSnapshot || !HasProject)
+        {
+            return;
+        }
 
         var snapshot = CreateProjectModel();
         _undoStack.Push(snapshot);
         _redoStack.Clear();
+        
         CommandManager.InvalidateRequerySuggested();
     }
 
@@ -133,52 +314,63 @@ public sealed class MainViewModel : BaseViewModel
             DefaultEdgeDelaySeconds = DefaultEdgeDelayMs / 1000,
             NextNodeId = _nextNodeId,
             NextEdgeId = _nextEdgeId,
-            Nodes = Nodes.Select(vm => new GraphNodeModel 
-            { 
-                Number = vm.Number, 
-                CenterX = vm.X, 
-                CenterY = vm.Y, 
-                Radius = vm.Radius, 
-                NodeCode = vm.NodeCode 
+            Nodes = Nodes.Select(vm => new GraphNodeModel
+            {
+                Number = vm.Number,
+                CenterX = vm.X,
+                CenterY = vm.Y,
+                Radius = vm.Radius,
+                NodeCode = vm.NodeCode
             }).ToList(),
-            Edges = Edges.Select(vm => new GraphEdgeModel 
-            { 
-                EdgeId = vm.Model.EdgeId, 
-                LocalOrder = vm.Model.LocalOrder, 
-                SourceNodeNumber = vm.SourceNodeNumber, 
-                TargetNodeNumber = vm.TargetNodeNumber, 
-                StartX = vm.Model.StartX, 
-                StartY = vm.Model.StartY, 
-                EndX = vm.Model.EndX, 
-                EndY = vm.Model.EndY, 
-                Predicate = vm.Predicate, 
-                DelaySeconds = vm.DelaySeconds, 
-                ParallelOffset = vm.ParallelOffset 
+            Edges = Edges.Select(vm => new GraphEdgeModel
+            {
+                EdgeId = vm.Model.EdgeId,
+                LocalOrder = vm.Model.LocalOrder,
+                SourceNodeNumber = vm.SourceNodeNumber,
+                TargetNodeNumber = vm.TargetNodeNumber,
+                StartX = vm.Model.StartX,
+                StartY = vm.Model.StartY,
+                EndX = vm.Model.EndX,
+                EndY = vm.Model.EndY,
+                Predicate = vm.Predicate,
+                DelaySeconds = vm.DelaySeconds,
+                ParallelOffset = vm.ParallelOffset
             }).ToList()
         };
     }
 
     private void Undo()
     {
-        if (_undoStack.Count == 0) return;
+        if (_undoStack.Count == 0)
+        {
+            return;
+        }
+        
         var current = CreateProjectModel();
         _redoStack.Push(current);
         var snapshot = _undoStack.Pop();
+        
         RestoreSnapshot(snapshot);
     }
 
     private void Redo()
     {
-        if (_redoStack.Count == 0) return;
+        if (_redoStack.Count == 0)
+        {
+            return;
+        }
+        
         var current = CreateProjectModel();
         _undoStack.Push(current);
         var snapshot = _redoStack.Pop();
+        
         RestoreSnapshot(snapshot);
     }
 
     private void RestoreSnapshot(GraphProjectModel project)
     {
         _isRestoringSnapshot = true;
+        
         try
         {
             Nodes.Clear();
@@ -189,12 +381,14 @@ public sealed class MainViewModel : BaseViewModel
             DefaultEdgeDelayMs = project.DefaultEdgeDelaySeconds * 1000;
 
             var nodeMap = new Dictionary<int, GraphNodeViewModel>();
+            
             foreach (var nodeModel in project.Nodes)
             {
                 var vm = new GraphNodeViewModel(nodeModel, onDelete: RemoveNode, onEdit: EditNodeCode, canEdit: () => !IsAnimating);
                 Nodes.Add(vm);
                 nodeMap[nodeModel.Number] = vm;
             }
+            
             foreach (var edgeModel in project.Edges)
             {
                 var from = nodeMap[edgeModel.SourceNodeNumber];
@@ -202,11 +396,14 @@ public sealed class MainViewModel : BaseViewModel
                 var edgeVm = new GraphEdgeViewModel(edgeModel, from, to, _geometryService, onEdit: EditEdge, onDelete: RemoveEdge, canEdit: () => !IsAnimating);
                 Edges.Add(edgeVm);
             }
+            
             foreach (var edge in Edges)
             {
                 if (Nodes.FirstOrDefault(n => n.Number == edge.SourceNodeNumber) is GraphNodeViewModel n1 &&
                     Nodes.FirstOrDefault(n => n.Number == edge.TargetNodeNumber) is GraphNodeViewModel n2)
+                {
                     UpdateParallelOffsets(n1, n2);
+                }
             }
         }
         finally
@@ -221,30 +418,49 @@ public sealed class MainViewModel : BaseViewModel
         AddNode(_lastRightClickPosition.X, _lastRightClickPosition.Y);
     }
 
+    /// <summary>
+    /// Добавляет новый узел с заданными координатами.
+    /// </summary>
+    /// <param name="x">Координата X.</param>
+    /// <param name="y">Координата Y.</param>
     public void AddNode(double x, double y)
     {
         int newId = 1;
         var existingIds = Nodes.Select(n => n.Number).OrderBy(id => id).ToList();
+        
         foreach (var id in existingIds)
         {
-            if (id == newId) newId++;
-            else break;
+            if (id == newId)
+            {
+                newId++;
+            }
+            else
+            {
+                break;
+            }
         }
 
         var model = new GraphNodeModel
         {
             Number = newId,
-            CenterX = x - 40, // compensate for offset in canvas (size 80x80)
+            CenterX = x - 40,
             CenterY = y - 40
         };
+        
         var vm = new GraphNodeViewModel(model, onDelete: RemoveNode, onEdit: EditNodeCode, canEdit: () => !IsAnimating);
         Nodes.Add(vm);
     }
 
+    /// <summary>
+    /// Создает ребро между двумя узлами.
+    /// </summary>
+    /// <param name="from">Исходный узел.</param>
+    /// <param name="to">Целевой узел.</param>
     public void ConnectNodes(GraphNodeViewModel from, GraphNodeViewModel to)
     {
         SaveSnapshot();
-        if (from == to) // allow self-loop
+        
+        if (from == to)
         {
             var localOrder = Edges.Count(e => e.SourceNodeNumber == from.Number) + 1;
             var model = new GraphEdgeModel
@@ -256,13 +472,16 @@ public sealed class MainViewModel : BaseViewModel
                 Predicate = localOrder,
                 DelaySeconds = _defaultEdgeDelayMs / 1000
             };
+            
             var edgeVm = new GraphEdgeViewModel(model, from, to, _geometryService, onEdit: EditEdge, onDelete: RemoveEdge, canEdit: () => !IsAnimating);
             Edges.Add(edgeVm);
         }
         else
         {
             if (Edges.Any(e => e.SourceNodeNumber == from.Number && e.TargetNodeNumber == to.Number))
-                return; // duplicate
+            {
+                return;
+            }
 
             var localOrder = Edges.Count(e => e.SourceNodeNumber == from.Number) + 1;
             var model = new GraphEdgeModel
@@ -274,9 +493,11 @@ public sealed class MainViewModel : BaseViewModel
                 Predicate = localOrder,
                 DelaySeconds = _defaultEdgeDelayMs / 1000
             };
+            
             var edgeVm = new GraphEdgeViewModel(model, from, to, _geometryService, onEdit: EditEdge, onDelete: RemoveEdge, canEdit: () => !IsAnimating);
             Edges.Add(edgeVm);
         }
+        
         UpdateParallelOffsets(from, to);
     }
 
@@ -297,26 +518,40 @@ public sealed class MainViewModel : BaseViewModel
             double absoluteShift = (i - (list.Count - 1) / 2.0) * step;
 
             if (edge.SourceNodeNumber == min)
+            {
                 edge.ParallelOffset = absoluteShift;
+            }
             else
+            {
                 edge.ParallelOffset = -absoluteShift;
+            }
         }
     }
 
+    /// <summary>
+    /// Удаляет узел и все связанные с ним ребра.
+    /// </summary>
+    /// <param name="node">Узел для удаления.</param>
     public void RemoveNode(GraphNodeViewModel node)
     {
         SaveSnapshot();
+        
         var edgesToRemove = Edges.Where(e => e.SourceNodeNumber == node.Number || e.TargetNodeNumber == node.Number).ToList();
         var sourcesToUpdate = edgesToRemove.Select(e => e.SourceNodeNumber).Distinct().Where(id => id != node.Number).ToList();
 
         foreach (var edge in edgesToRemove)
+        {
             Edges.Remove(edge);
+        }
 
         foreach (var src in sourcesToUpdate)
         {
             var remaining = Edges.Where(e => e.SourceNodeNumber == src).OrderBy(e => e.LocalOrder).ToList();
+            
             for (int i = 0; i < remaining.Count; i++)
+            {
                 remaining[i].LocalOrder = i + 1;
+            }
         }
 
         Nodes.Remove(node);
@@ -325,6 +560,7 @@ public sealed class MainViewModel : BaseViewModel
     private void RemoveEdge(GraphEdgeViewModel edge)
     {
         SaveSnapshot();
+        
         int src = edge.SourceNodeNumber;
         var from = Nodes.FirstOrDefault(n => n.Number == edge.SourceNodeNumber);
         var to = Nodes.FirstOrDefault(n => n.Number == edge.TargetNodeNumber);
@@ -332,16 +568,22 @@ public sealed class MainViewModel : BaseViewModel
         Edges.Remove(edge);
 
         var remaining = Edges.Where(e => e.SourceNodeNumber == src).OrderBy(e => e.LocalOrder).ToList();
+        
         for (int i = 0; i < remaining.Count; i++)
+        {
             remaining[i].LocalOrder = i + 1;
+        }
 
         if (from != null && to != null)
+        {
             UpdateParallelOffsets(from, to);
+        }
     }
 
     private void EditNodeCode(GraphNodeViewModel node)
     {
         var result = _dialogService.ShowNodeCodeDialog(node.NodeCode);
+        
         if (result != null && result != node.NodeCode)
         {
             SaveSnapshot();
@@ -352,6 +594,7 @@ public sealed class MainViewModel : BaseViewModel
     private void EditEdge(GraphEdgeViewModel edge)
     {
         var result = _dialogService.ShowEdgeDialog(edge.Predicate, edge.DelaySeconds);
+        
         if (result.HasValue && (result.Value.predicate != edge.Predicate || result.Value.delay != edge.DelaySeconds))
         {
             SaveSnapshot();
@@ -363,6 +606,7 @@ public sealed class MainViewModel : BaseViewModel
     private void ShowAnimationSettings()
     {
         var result = _dialogService.ShowAnimationSettingsDialog(AnimationDurationSeconds);
+        
         if (result.HasValue && result.Value != AnimationDurationSeconds)
         {
             SaveSnapshot();
@@ -372,9 +616,11 @@ public sealed class MainViewModel : BaseViewModel
 
     private async Task RunAnimation()
     {
-        if (IsAnimating) return;
+        if (IsAnimating)
+        {
+            return;
+        }
 
-        // Validation for graph connection
         if (Nodes.Count > 0)
         {
             foreach (var node in Nodes)
@@ -393,10 +639,14 @@ public sealed class MainViewModel : BaseViewModel
         IsAnimating = true;
         _animationCts = new CancellationTokenSource();
         ModeText = "Анимация";
+        
         try
         {
-            await _animationService.RunAsync(Nodes.ToList(), Edges.ToList(),
-                TimeSpan.FromSeconds(AnimationDurationSeconds), _animationCts.Token);
+            await _animationService.RunAsync(
+                Nodes.ToList(), 
+                Edges.ToList(),
+                TimeSpan.FromSeconds(AnimationDurationSeconds), 
+                _animationCts.Token);
         }
         finally
         {
@@ -409,20 +659,26 @@ public sealed class MainViewModel : BaseViewModel
         _animationCts?.Cancel();
         _animationCts = null;
         IsAnimating = false;
+        
         foreach (var node in Nodes)
         {
             node.IsHighlighted = false;
             node.IsStartHighlighted = false;
         }
+        
         ModeText = "Редактирование";
     }
 
     private void SaveProject()
     {
-        if (_currentProjectPath == null || !HasProject) return;
+        if (_currentProjectPath == null || !HasProject)
+        {
+            return;
+        }
 
         var project = CreateProjectModel();
         _serializer.Save(_currentProjectPath, project);
+        
         _undoStack.Clear();
         _redoStack.Clear();
         CommandManager.InvalidateRequerySuggested();
@@ -431,7 +687,11 @@ public sealed class MainViewModel : BaseViewModel
     private void LoadProject()
     {
         var path = _dialogService.ShowOpenFileDialog();
-        if (path == null) return;
+        
+        if (path == null)
+        {
+            return;
+        }
 
         try
         {
@@ -452,12 +712,14 @@ public sealed class MainViewModel : BaseViewModel
             DefaultEdgeDelayMs = project.DefaultEdgeDelaySeconds * 1000;
 
             var nodeMap = new Dictionary<int, GraphNodeViewModel>();
+            
             foreach (var nodeModel in project.Nodes)
             {
                 var vm = new GraphNodeViewModel(nodeModel, onDelete: RemoveNode, onEdit: EditNodeCode, canEdit: () => !IsAnimating);
                 Nodes.Add(vm);
                 nodeMap[nodeModel.Number] = vm;
             }
+            
             foreach (var edgeModel in project.Edges)
             {
                 var from = nodeMap[edgeModel.SourceNodeNumber];
@@ -465,10 +727,11 @@ public sealed class MainViewModel : BaseViewModel
                 var edgeVm = new GraphEdgeViewModel(edgeModel, from, to, _geometryService, onEdit: EditEdge, onDelete: RemoveEdge, canEdit: () => !IsAnimating);
                 Edges.Add(edgeVm);
             }
-            // Recalculate all parallel offsets
+            
             foreach (var edge in Edges)
-                UpdateParallelOffsets(Nodes.First(n => n.Number == edge.SourceNodeNumber),
-                                      Nodes.First(n => n.Number == edge.TargetNodeNumber));
+            {
+                UpdateParallelOffsets(Nodes.First(n => n.Number == edge.SourceNodeNumber), Nodes.First(n => n.Number == edge.TargetNodeNumber));
+            }
         }
         catch (Exception ex)
         {
@@ -479,7 +742,11 @@ public sealed class MainViewModel : BaseViewModel
     private void NewProject()
     {
         var path = _dialogService.ShowSaveFileDialog("graph.xml");
-        if (path == null) return;
+        
+        if (path == null)
+        {
+            return;
+        }
 
         StopAnimation();
         Nodes.Clear();
@@ -492,9 +759,15 @@ public sealed class MainViewModel : BaseViewModel
         AnimationDurationSeconds = 20;
         DefaultEdgeDelayMs = 2000;
         ModeText = "Редактирование";
+        
         SaveProject();
     }
 
+    /// <summary>
+    /// Начинает создание соединения между узлами.
+    /// </summary>
+    /// <param name="source">Исходный узел.</param>
+    /// <param name="startPoint">Точка начала.</param>
     public void StartConnection(GraphNodeViewModel source, Point startPoint)
     {
         _connectionSource = source;
@@ -505,19 +778,33 @@ public sealed class MainViewModel : BaseViewModel
         PreviewY2 = startPoint.Y;
     }
 
+    /// <summary>
+    /// Обновляет линию предпросмотра при создании соединения.
+    /// </summary>
+    /// <param name="current">Текущая точка.</param>
     public void UpdatePreview(Point current)
     {
         PreviewX2 = current.X;
         PreviewY2 = current.Y;
     }
 
+    /// <summary>
+    /// Завершает создание соединения.
+    /// </summary>
+    /// <param name="target">Целевой узел.</param>
     public void CompleteConnection(GraphNodeViewModel? target)
     {
         if (_connectionSource != null && target != null)
+        {
             ConnectNodes(_connectionSource, target);
+        }
+        
         CancelConnection();
     }
 
+    /// <summary>
+    /// Отменяет процесс создания соединения.
+    /// </summary>
     public void CancelConnection()
     {
         _connectionSource = null;
