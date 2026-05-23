@@ -630,7 +630,7 @@ public sealed class MainViewModel : BaseViewModel
 
                 if (!hasIncoming && !hasOutgoing)
                 {
-                    MessageBox.Show($"Граф несвязный: узел {node.Number} не имеет входящих или выходящих дуг.", "Ошибка анимации", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _dialogService.ShowError($"Граф несвязный: узел {node.Number} не имеет входящих или выходящих дуг.", "Ошибка анимации");
                     return;
                 }
             }
@@ -735,7 +735,7 @@ public sealed class MainViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Не удалось загрузить проект. Файл поврежден или имеет неверный формат.\n\nОшибка: {ex.Message}", "Ошибка загрузки", MessageBoxButton.OK, MessageBoxImage.Error);
+            _dialogService.ShowError($"Не удалось загрузить проект. Файл поврежден или имеет неверный формат.\n\nОшибка: {ex.Message}", "Ошибка загрузки");
         }
     }
 

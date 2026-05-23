@@ -3,6 +3,7 @@ using System.Data;
 using System.Windows;
 using RGZ_TIMP.Views;
 using RGZ_TIMP.ViewModels;
+using RGZ_TIMP.Services;
 
 namespace RGZ_TIMP
 {
@@ -19,9 +20,11 @@ namespace RGZ_TIMP
         {
             base.OnStartup(e);
 
+            var dialogService = new DialogService();
+
             DispatcherUnhandledException += (s, args) =>
             {
-                MessageBox.Show($"Произошла непредвиденная ошибка:\n{args.Exception.Message}", "Ошибка приложения", MessageBoxButton.OK, MessageBoxImage.Error);
+                dialogService.ShowError($"Произошла непредвиденная ошибка:\n{args.Exception.Message}", "Ошибка приложения");
                 args.Handled = true;
             };
 

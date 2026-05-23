@@ -44,4 +44,18 @@ public interface IDialogService
     /// Показывает окно помощи для пользователя.
     /// </summary>
     void ShowHelpDialog();
+
+    /// <summary>
+    /// Показывает диалоговое окно с ошибкой.
+    /// </summary>
+    /// <param name="message">Сообщение об ошибке.</param>
+    /// <param name="title">Заголовок диалога.</param>
+    void ShowError(string message, string title = "Ошибка");
+
+    /// <summary>
+    /// Показывает информационное диалоговое окно.
+    /// </summary>
+    /// <param name="message">Информационное сообщение.</param>
+    /// <param name="title">Заголовок диалога.</param>
+    void ShowInfo(string message, string title = "Информация");
 }

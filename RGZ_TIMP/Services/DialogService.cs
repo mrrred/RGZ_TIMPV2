@@ -9,6 +9,14 @@ namespace RGZ_TIMP.Services;
 public sealed class DialogService : IDialogService
 {
     /// <summary>
+    /// Инициализирует новый экземпляр класса DialogService.
+    /// </summary>
+    public DialogService()
+    {
+        // Устанавливаем глобальный экземпляр HelpProvider
+        HelpProvider.SetInstance(new HelpProvider(this));
+    }
+    /// <summary>
     /// Показывает диалог редактирования кода узла.
     /// </summary>
     /// <param name="currentCode">Текущий код узла.</param>
@@ -232,5 +240,25 @@ public sealed class DialogService : IDialogService
     public void ShowHelpDialog()
     {
         HelpProvider.ShowHelp();
+    }
+
+    /// <summary>
+    /// Показывает диалоговое окно с ошибкой.
+    /// </summary>
+    /// <param name="message">Сообщение об ошибке.</param>
+    /// <param name="title">Заголовок диалога.</param>
+    public void ShowError(string message, string title = "Ошибка")
+    {
+        MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+
+    /// <summary>
+    /// Показывает информационное диалоговое окно.
+    /// </summary>
+    /// <param name="message">Информационное сообщение.</param>
+    /// <param name="title">Заголовок диалога.</param>
+    public void ShowInfo(string message, string title = "Информация")
+    {
+        MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Information);
     }
 }

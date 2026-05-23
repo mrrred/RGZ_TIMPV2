@@ -7,8 +7,10 @@ namespace RGZ_TIMP.Services;
 /// <summary>
 /// Провайдер для отображения справочной информации.
 /// </summary>
-public static class HelpProvider
+public class HelpProvider
 {
+    private readonly IDialogService _dialogService;
+
     /// <summary>
     /// Свойство зависимости для ключевого слова справки.
     /// </summary>
@@ -39,11 +41,49 @@ public static class HelpProvider
         obj.SetValue(HelpKeywordProperty, value);
     }
 
+    private static HelpProvider? _instance;
+
+    /// <summary>
+    /// Инициализирует новый экземпляр класса HelpProvider.
+    /// </summary>
+    /// <param name="dialogService">Сервис диалоговых окон.</param>
+    public HelpProvider(IDialogService dialogService)
+    {
+        _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+    }
+
+    /// <summary>
+    /// Устанавливает глобальный экземпляр HelpProvider.
+    /// </summary>
+    public static void SetInstance(HelpProvider instance)
+    {
+        _instance = instance;
+    }
+
+    /// <summary>
+    /// Показывает окно справки через глобальный экземпляр.
+    /// </summary>
+    /// <param name="keyword">Ключевое слово для поиска нужного раздела (необязательно).</param>
+    public static void ShowHelp(string? keyword = null)
+    {
+        if (_instance != null)
+        {
+            _instance.ShowHelpInternal(keyword);
+        }
+        else
+        {
+            // Fallback - создаем временный экземпляр с DialogService по умолчанию
+            var tempService = new DialogService();
+            var tempProvider = new HelpProvider(tempService);
+            tempProvider.ShowHelpInternal(keyword);
+        }
+    }
+
     /// <summary>
     /// Показывает окно справки.
     /// </summary>
     /// <param name="keyword">Ключевое слово для поиска нужного раздела (необязательно).</param>
-    public static void ShowHelp(string? keyword = null)
+    private void ShowHelpInternal(string? keyword = null)
     {
         string chmPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "help", "Help.chm");
 
@@ -60,7 +100,7 @@ public static class HelpProvider
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при открытии файла справки: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                _dialogService.ShowError($"Ошибка при открытии файла справки: {ex.Message}", "Ошибка");
             }
         }
         else
@@ -86,7 +126,7 @@ public static class HelpProvider
             }
             else
             {
-                MessageBox.Show("Файл справки не найден. Скомпилируйте проект CHM или проверьте папку help.", "Справка", MessageBoxButton.OK, MessageBoxImage.Information);
+                _dialogService.ShowInfo("Файл справки не найден. Скомпилируйте проект CHM или проверьте папку help.", "Справка");
             }
         }
     }
